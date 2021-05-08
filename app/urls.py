@@ -2,6 +2,8 @@ from django.urls import path
 from app import views
 from django.conf.urls.static import static
 from django.conf import settings
+from django.contrib.auth import views as auth_views  #renaming the views to rectify name conflict
+from .forms import LoginForm
 urlpatterns = [
     # path('', views.home), user for fxn based
     path('',views.ProductView.as_view(),name="home"),
@@ -14,7 +16,9 @@ urlpatterns = [
     path('changepassword/', views.change_password, name='changepassword'),
     path('mobile/', views.mobile, name='mobile'),
     path('mobile/<slug:data>', views.mobile, name='mobiledata'),
-    path('login/', views.login, name='login'),
-    path('registration/', views.customerregistration, name='customerregistration'),
+    # we are using default login so defining direct in urls not done anything in views 
+    path('accounts/login/',auth_views.LoginView.as_view(template_name='app/login.html',authentication_form=LoginForm),name='login'),
+    path('logout/',auth_views.LogoutView.as_view(next_page='login'),name='logout'),
+    path('registration/',views.CustomerRegistrationView.as_view(),name="customerregistration"),
     path('checkout/', views.checkout, name='checkout'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

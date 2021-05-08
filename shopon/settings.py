@@ -122,4 +122,5 @@ STATIC_URL = '/static/'
 #using this when we add any image to db it will store to media folder
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR,'media')
+LOGIN_REDIRECT_URL = '/profile/'
 

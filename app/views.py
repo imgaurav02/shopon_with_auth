@@ -1,6 +1,9 @@
 from django.shortcuts import render
 from django.views import View
 from .models import Customer,Product,Cart,OrderPlcaed
+from .forms import CustomerRegistrationForm
+from django.contrib import messages
+
 # def home(request):
 #  return render(request, 'app/home.html')
 # class based views defining
@@ -46,11 +49,22 @@ def mobile(request,data = None):
         mobiles = Product.objects.filter(category='M').filter(discounted_price__gt=10000)
     return render(request, 'app/mobile.html',{'mobiles':mobiles})
 
-def login(request):
- return render(request, 'app/login.html')
+# we are using default login so defining direct in urls not done anything in views 
 
-def customerregistration(request):
- return render(request, 'app/customerregistration.html')
+# def customerregistration(request):
+#  return render(request, 'app/customerregistration.html')
+
+class CustomerRegistrationView(View):
+    def get(self,request):
+        form = CustomerRegistrationForm()
+        return render(request, 'app/customerregistration.html',{'form':form})
+    def post(self,request):
+        form = CustomerRegistrationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request,'Congratulations!! Registered Successfully')
+        return render(request, 'app/customerregistration.html',{'form':form})
+
 
 def checkout(request):
  return render(request, 'app/checkout.html')
