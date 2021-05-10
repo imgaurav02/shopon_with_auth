@@ -40,6 +40,7 @@ class Customer(models.Model):
     city = models.CharField(max_length=50)
     zipcode = models.IntegerField()
     state = models.CharField(choices=STATE_CHOICE, max_length=50)
+    phone = models.CharField(max_length=90,default="")
 
     def __str__(self):
         return str(self.id)
