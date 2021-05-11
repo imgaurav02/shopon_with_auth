@@ -6,6 +6,13 @@ from django.contrib import messages
 
 from django.db.models import Q
 from django.http import JsonResponse
+
+# this used to prevent access page while user is not logged in but only for function based view 
+from django.contrib.auth.decorators import login_required
+
+# this used to prevent access page while user is not logged in but only for class based view 
+from django.utils.decorators import method_decorator
+
 # def home(request):
 #  return render(request, 'app/home.html')
 # class based views defining
@@ -22,6 +29,7 @@ class ProdcutDetailView(View):
         product = Product.objects.get(pk=pk)
         return render(request,'app/productdetail.html',{'product':product})
 
+@login_required
 def add_to_cart(request):
     user = request.user
     product_id = request.GET.get('prod_id')
@@ -36,6 +44,7 @@ def add_to_cart(request):
         Cart(user=user,product=product).save()
     return redirect('/cart')
 
+@login_required
 def show_cart(request):
     if request.user.is_authenticated:
         user = request.user
@@ -119,9 +128,12 @@ def remove_cart(request):
         }
         return JsonResponse(data)
 
+@login_required
 def buy_now(request):
  return render(request, 'app/buynow.html')
 
+# this id how we impliment login_required in class absed view 
+@method_decorator(login_required,name='dispatch')
 class ProfileView(View):
     def get(self,request):
         form = CustomerProfileForm()
@@ -142,13 +154,15 @@ class ProfileView(View):
             messages.success(request,'Address Added SuccessFully!!')
         return render(request,'app/profile.html',{'form':form,'active':'btn-primary'})
         
-
+@login_required
 def address(request):
     add = Customer.objects.filter(user=request.user)
     return render(request, 'app/address.html',{'add':add,'active':'btn-primary'})
 
+@login_required
 def orders(request):
- return render(request, 'app/orders.html')
+    op = OrderPlcaed.objects.filter(user=request.user)
+    return render(request, 'app/orders.html',{'order':op})
 
 
 def mobile(request,data = None):
@@ -178,6 +192,30 @@ class CustomerRegistrationView(View):
             messages.success(request,'Congratulations!! Registered Successfully')
         return render(request, 'app/customerregistration.html',{'form':form})
 
-
+@login_required
 def checkout(request):
- return render(request, 'app/checkout.html')
+    user = request.user
+    add = Customer.objects.filter(user=user)
+    cart_items = Cart.objects.filter(user=user)
+    amount =0.0
+    shipping_amount =40.0
+    total_amount = 0.0
+    cart_product = [p for p in Cart.objects.all() if p.user==request.user]
+    if cart_product:
+        for i in cart_product:
+            temp = (i.quantity * i.product.discounted_price)
+            amount +=temp
+    total_amount = amount+shipping_amount
+    return render(request, 'app/checkout.html',{'add':add,'tamt':total_amount,'cart_items':cart_items})
+
+@login_required
+def paymentdone(request):
+    if request.method == 'GET':
+        user = request.user
+        custid= request.GET.get('custid')
+        customer = Customer.objects.get(id=custid)
+        cart = Cart.objects.filter(user=user)
+        for c in cart:
+            OrderPlcaed(user=user,customer=customer,product=c.product,quantity=c.quantity).save()
+            c.delete()
+        return redirect("orders")

@@ -75,6 +75,10 @@ class Cart(models.Model):
 
     def __str__(self):
         return str(self.id)
+# defining this property to display cost of each product at checkout page 
+    @property
+    def total_cost(Self):
+        return Self.quantity * Self.product.discounted_price
 
 
 STATUS_CHOICE = (
@@ -92,3 +96,8 @@ class OrderPlcaed(models.Model):
     quantity = models.PositiveIntegerField(default=1)
     ordered_date = models.DateTimeField( auto_now_add=True)
     status = models.CharField(choices = STATUS_CHOICE,default='Pending', max_length=50)
+    @property
+    def total_cost(Self):
+        return Self.quantity * Self.product.discounted_price
+    
+    

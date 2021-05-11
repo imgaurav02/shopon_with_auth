@@ -37,4 +37,5 @@ urlpatterns = [
 
     path('registration/',views.CustomerRegistrationView.as_view(),name="customerregistration"),
     path('checkout/', views.checkout, name='checkout'),
+    path('paymentdone/', views.paymentdone, name='paymentdone'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
