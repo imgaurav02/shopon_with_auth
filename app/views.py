@@ -1,6 +1,7 @@
 from django.shortcuts import render,redirect
 from django.views import View
 from .models import Customer,Product,Cart,OrderPlcaed
+from django.contrib.auth.models import User
 from .forms import CustomerRegistrationForm,CustomerProfileForm
 from django.contrib import messages
 
@@ -130,7 +131,42 @@ def remove_cart(request):
 
 @login_required
 def buy_now(request):
- return render(request, 'app/buynow.html')
+    user = request.user
+    product_id = request.GET.get('prod_id')
+    c= Cart.objects.filter(product=product_id,user=user).exists()
+    if c:
+        update = Cart.objects.get(Q(product=product_id) & Q(user = request.user))
+        print(update)
+        update.quantity +=1
+        update.save()
+    else:
+        product = Product.objects.get(id=product_id)
+        Cart(user=user,product=product).save()
+    return redirect('/checkout')
+
+
+@login_required
+def address(request):
+    add = Customer.objects.filter(user=request.user)
+    return render(request, 'app/address.html',{'add':add,'active':'btn-primary'})
+
+@login_required
+def orders(request):
+    op = OrderPlcaed.objects.filter(user=request.user)
+    return render(request, 'app/orders.html',{'order':op})
+
+
+def mobile(request,data = None):
+    if data == None:
+        mobiles = Product.objects.filter(category='M')
+    elif data == 'Redmi' or data == 'samsung':
+        mobiles = Product.objects.filter(category='M').filter(brand=data)
+    elif data == 'below' :
+        mobiles = Product.objects.filter(category='M').filter(discounted_price__lt=10000)
+    elif data == 'above' :
+        mobiles = Product.objects.filter(category='M').filter(discounted_price__gt=10000)
+    return render(request, 'app/mobile.html',{'mobiles':mobiles})
+
 
 # this id how we impliment login_required in class absed view 
 @method_decorator(login_required,name='dispatch')
@@ -154,27 +190,6 @@ class ProfileView(View):
             messages.success(request,'Address Added SuccessFully!!')
         return render(request,'app/profile.html',{'form':form,'active':'btn-primary'})
         
-@login_required
-def address(request):
-    add = Customer.objects.filter(user=request.user)
-    return render(request, 'app/address.html',{'add':add,'active':'btn-primary'})
-
-@login_required
-def orders(request):
-    op = OrderPlcaed.objects.filter(user=request.user)
-    return render(request, 'app/orders.html',{'order':op})
-
-
-def mobile(request,data = None):
-    if data == None:
-        mobiles = Product.objects.filter(category='M')
-    elif data == 'Redmi' or data == 'samsung':
-        mobiles = Product.objects.filter(category='M').filter(brand=data)
-    elif data == 'below' :
-        mobiles = Product.objects.filter(category='M').filter(discounted_price__lt=10000)
-    elif data == 'above' :
-        mobiles = Product.objects.filter(category='M').filter(discounted_price__gt=10000)
-    return render(request, 'app/mobile.html',{'mobiles':mobiles})
 
 # we are using default login so defining direct in urls not done anything in views 
 
@@ -188,8 +203,13 @@ class CustomerRegistrationView(View):
     def post(self,request):
         form = CustomerRegistrationForm(request.POST)
         if form.is_valid():
-            form.save()
-            messages.success(request,'Congratulations!! Registered Successfully')
+            email = form.cleaned_data['email']
+            c = User.objects.filter(email=email).exists()
+            if c:
+                messages.warning(request,'Email Already Exists')
+            else:
+                form.save()
+                messages.success(request,'Congratulations!! Registered Successfully')
         return render(request, 'app/customerregistration.html',{'form':form})
 
 @login_required
