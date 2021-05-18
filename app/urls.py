@@ -21,6 +21,13 @@ urlpatterns = [
 
     path('mobile/', views.mobile, name='mobile'),
     path('mobile/<slug:data>', views.mobile, name='mobiledata'),
+    path('laptop/', views.laptop, name='laptop'),
+    path('laptop/<slug:data>', views.laptop, name='laptopdata'),
+    path('men/', views.men, name='men'),
+    path('men/<slug:data>', views.men, name='mendata'),
+    path('women/', views.women, name='women'),
+    path('women/<slug:data>', views.women, name='womendata'),
+   
     # we are using default login so defining direct in urls not done anything in views 
     
     #  all authentication urls are starts from here

@@ -20,10 +20,12 @@ from django.utils.decorators import method_decorator
 
 class ProductView(View):
     def get(Self, request):
-        topwears = Product.objects.filter(category='TW')
-        bottomwears = Product.objects.filter(category='BW')
+        
         mobiles = Product.objects.filter(category='M')
-        return render(request,'app/home.html', {'topwears':topwears,'bottomwears':bottomwears,'mobiles':mobiles})
+        laptop = Product.objects.filter(category='L')
+        men = Product.objects.filter(category='ME')
+        woman = Product.objects.filter(category='WO')
+        return render(request,'app/home.html', {'laptop':laptop,'men':men,'mobiles':mobiles,'woman':woman})
 
 class ProdcutDetailView(View):
     def get(self,request,pk):
@@ -166,6 +168,41 @@ def mobile(request,data = None):
     elif data == 'above' :
         mobiles = Product.objects.filter(category='M').filter(discounted_price__gt=10000)
     return render(request, 'app/mobile.html',{'mobiles':mobiles})
+
+
+def laptop(request,data = None):
+    if data == None:
+        laptop = Product.objects.filter(category='L')
+    elif data == 'Redmi' or data == 'samsung':
+        laptop = Product.objects.filter(category='L').filter(brand=data)
+    elif data == 'below' :
+        laptop = Product.objects.filter(category='L').filter(discounted_price__lt=25000)
+    elif data == 'above' :
+        laptop = Product.objects.filter(category='L').filter(discounted_price__gt=25000)
+    return render(request, 'app/laptop.html',{'laptop':laptop})
+
+
+def men(request,data = None):
+    if data == None:
+        men = Product.objects.filter(category='ME')
+    elif data == 'Redmi' or data == 'samsung':
+        men = Product.objects.filter(category='ME').filter(brand=data)
+    elif data == 'below' :
+        men = Product.objects.filter(category='ME').filter(discounted_price__lt=500)
+    elif data == 'above' :
+        men = Product.objects.filter(category='ME').filter(discounted_price__gt=500)
+    return render(request, 'app/men.html',{'men':men})
+
+def women(request,data = None):
+    if data == None:
+        women = Product.objects.filter(category='WO')
+    elif data == 'Redmi' or data == 'samsung':
+        women = Product.objects.filter(category='WO').filter(brand=data)
+    elif data == 'below' :
+        women = Product.objects.filter(category='WO').filter(discounted_price__lt=500)
+    elif data == 'above' :
+        women = Product.objects.filter(category='WO').filter(discounted_price__gt=500)
+    return render(request, 'app/women.html',{'women':women})
 
 
 # this id how we impliment login_required in class absed view 

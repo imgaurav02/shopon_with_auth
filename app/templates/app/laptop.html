@@ -1,20 +1,20 @@
 {% extends 'app/base.html' %}
 {% load static %}
-{% block title %}Mobiles{% endblock title %}
+{% block title %}Laptops{% endblock title %}
 {% block main-content %}
 <div class="container my-5">
  <div class="row">
   <div class="col-sm-3">
    <div class="list-group">
-  <a href="{% url 'mobile' %}" class="list-group-item list-group-item-action" aria-current="true">All Mobiles</a>
-  <a href="{% url 'mobiledata' 'below' %}" class="list-group-item list-group-item-action" aria-current="true">below 10000</a>
-  <a href="{% url 'mobiledata' 'above' %}" class="list-group-item list-group-item-action" aria-current="true">above 10000</a>
+  <a href="{% url 'laptop' %}" class="list-group-item list-group-item-action" aria-current="true">All Laptops</a>
+  <a href="{% url 'laptopdata' 'below' %}" class="list-group-item list-group-item-action" aria-current="true">below 25000</a>
+  <a href="{% url 'laptopdata' 'above' %}" class="list-group-item list-group-item-action" aria-current="true">above 25000</a>
 
 </div>
   </div>
   <div class="col-sm-8 offset-sm-1">
   <div class="row">
-  {% for product in mobiles %}
+  {% for product in Laptop %}
   <div class="col-sm-4 text-center mb-4">
   <a href="{%url 'product-detail' product.id %}" class="btn">
   <div class="item">

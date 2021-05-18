@@ -35,22 +35,16 @@
            </li>
            <li class="nav-item dropdown">
              <a class="nav-link dropdown-toggle text-white" href="#" id="electronicsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-               Electronics
+               Categories
              </a>
              <ul class="dropdown-menu" aria-labelledby="electronicsDropdown">
                <li><a class="dropdown-item" href="{% url 'mobile' %}">Mobile</a></li>
-               <li><a class="dropdown-item" href="#">Laptop</a></li>
+               <li><a class="dropdown-item" href="{% url 'laptop' %}">Laptop</a></li>
+               <li><a class="dropdown-item" href="{% url 'men' %}">Mens Fashion</a></li>
+               <li><a class="dropdown-item" href="{% url 'women' %}">Womens Fashion</a></li>
              </ul>
            </li>
-           <li class="nav-item dropdown">
-             <a class="nav-link dropdown-toggle text-white" href="#" id="fashionDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-               Fashion
-             </a>
-             <ul class="dropdown-menu" aria-labelledby="fashionDropdown">
-               <li><a class="dropdown-item" href="#">Top Wear</a></li>
-               <li><a class="dropdown-item" href="#">Bottom Wear</a></li>
-             </ul>
-           </li>
+           
          </ul>
          {% comment %} <form class="d-flex">
            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
@@ -93,8 +87,8 @@
 
     <!-- Start Footer -->
     <footer class="container-fluid bg-dark text-center p-2 mt-5">
-        <small class="text-white">Copyright &copy; 2021 || Designed By Gaurav Singh || </small>
-        <img src="{% static 'app/images/payment.png' %}" alt="" srcset="" class="img-fluid" height="2px">
+        <small class="text-white">Copyright &copy; 2021  Designed By Gaurav Singh  </small>
+       
     </footer> <!-- End Footer -->
 
     <!-- Jquery -->
