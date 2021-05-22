@@ -224,6 +224,7 @@ class ProfileView(View):
             usr = request.user
             reg = Customer(user=usr,name=name,city=city,locality=locality,state=state,zipcode=zipcode,phone=phone)
             reg.save()
+            form = CustomerProfileForm()
             messages.success(request,'Address Added SuccessFully!!')
         return render(request,'app/profile.html',{'form':form,'active':'btn-primary'})
         
